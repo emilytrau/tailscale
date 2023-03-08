@@ -3959,7 +3959,9 @@ func (b *LocalBackend) setTCPPortsInterceptedFromNetmapAndPrefsLocked(prefs ipn.
 	}
 
 	b.reloadServeConfigLocked(prefs)
-	if b.serveConfig.Valid() {
+	// Don't open port listeners for Serve since it may crash with the application
+	// Funnel traffic still flows through HandleIngressTCPConn
+	if false {
 		servePorts := make([]uint16, 0, 3)
 		b.serveConfig.TCP().Range(func(port uint16, _ ipn.TCPPortHandlerView) bool {
 			if port > 0 {
